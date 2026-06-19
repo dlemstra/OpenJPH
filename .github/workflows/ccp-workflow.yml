@@ -48,10 +48,16 @@ jobs:
       fail-fast: false
       matrix:
         include: [
-          { system: MacOS-Intel,    runner: macos-15-intel },
-          { system: MacOS-latest,   runner: macos-latest },
-          { system: Ubuntu-22,      runner: ubuntu-22.04 },
-          { system: Ubuntu-latest,  runner: ubuntu-latest },
+          { system: MacOS-Intel-gcc,    runner: macos-15-intel, cc: gcc,   cxx: g++     },
+          { system: MacOS-Intel-clang,  runner: macos-15-intel, cc: clang, cxx: clang++ },
+          { system: MacOS-latest-gcc,   runner: macos-latest,   cc: gcc,   cxx: g++     },
+          { system: MacOS-latest-clang, runner: macos-latest,   cc: clang, cxx: clang++ },
+          { system: Ubuntu-20-gcc,      runner: ubuntu-20.04,   cc: gcc,   cxx: g++     },
+          { system: Ubuntu-20-clang,    runner: ubuntu-20.04,   cc: clang, cxx: clang++ },
+          { system: Ubuntu-22-gcc,      runner: ubuntu-22.04,   cc: gcc,   cxx: g++     },
+          { system: Ubuntu-22-clang,    runner: ubuntu-22.04,   cc: clang, cxx: clang++ },
+          { system: Ubuntu-latest-gcc,  runner: ubuntu-latest,  cc: gcc,   cxx: g++     },
+          { system: Ubuntu-latest-clang,runner: ubuntu-latest,  cc: clang, cxx: clang++ },
         ]
     name: ${{ matrix.system }} Build and Test
     runs-on: ${{ matrix.runner }}
@@ -59,6 +65,9 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: cmake
+      env:
+        CC: ${{ matrix.cc }}
+        CXX: ${{ matrix.cxx }}
       run: cmake -DCMAKE_BUILD_TYPE=Release -DOJPH_BUILD_TESTS=ON ..
       working-directory: build
     - name: build
